@@ -1,0 +1,43 @@
+{
+  "name": "Windows Cat",
+  "description": "PSHS-IRC Back to School playlist-themed dark strip \u2014 Arangkada 2026.",
+  "author": "PSHS-IRC",
+  "thumbnail": "thumbnail.png",
+  "frame": "frame.png",
+  "background": "#000000",
+  "output": {
+    "width": 709,
+    "height": 2000
+  },
+  "photos": [
+    {
+      "x": 118,
+      "y": 155,
+      "width": 450,
+      "height": 286,
+      "rotation": 0
+    },
+    {
+      "x": 117,
+      "y": 551,
+      "width": 439,
+      "height": 269,
+      "rotation": 0
+    },
+    {
+      "x": 111,
+      "y": 922,
+      "width": 458,
+      "height": 295,
+      "rotation": 0
+    },
+    {
+      "x": 136,
+      "y": 1332,
+      "width": 447,
+      "height": 277,
+      "rotation": 0
+    }
+  ],
+  "created_at": "2026-07-09T06:09:32.721807"
+}

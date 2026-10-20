@@ -1,0 +1,124 @@
+/* ==========================================================================
+   assets/css/animations.css
+   Centralised keyframes. Components reference these by name; nothing
+   here is component-specific so they're easy to reuse for future
+   features (GIF mode, stickers, etc.) without duplicating keyframes.
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+}
+
+/* ---- Screen transitions (crossfade + rise), driven by app.js toggling classes ---- */
+.screen--active {
+  animation: screenIn var(--duration-slow) var(--ease-out);
+}
+@keyframes screenIn {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---- Welcome screen ambient glow drift ---- */
+.welcome__glow {
+  animation: glowDrift 12s ease-in-out infinite alternate;
+}
+@keyframes glowDrift {
+  0%   { transform: translate(-6%, -4%) scale(1); }
+  100% { transform: translate(6%, 4%) scale(1.08); }
+}
+
+.welcome__title, .welcome__subtitle, .welcome__cta, .welcome__badge {
+  animation: floatUp var(--duration-slow) var(--ease-out) both;
+}
+.welcome__badge { animation-delay: 0ms; }
+.welcome__title { animation-delay: 60ms; }
+.welcome__subtitle { animation-delay: 120ms; }
+.welcome__cta { animation-delay: 180ms; }
+@keyframes floatUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---- Template cards staggered entrance ---- */
+.template-card {
+  animation: cardIn var(--duration-normal) var(--ease-out) both;
+}
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(10px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ---- Countdown number pulse ---- */
+.camera-stage__countdown-number.is-tick {
+  animation: countdownPulse 1s var(--ease-out);
+}
+@keyframes countdownPulse {
+  0%   { opacity: 0; transform: scale(1.6); }
+  35%  { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0.85); }
+}
+
+/* ---- Camera flash ---- */
+.camera-stage__flash.is-firing {
+  animation: flashFire 380ms ease-out;
+}
+@keyframes flashFire {
+  0%   { opacity: 0.95; }
+  100% { opacity: 0; }
+}
+
+/* ---- Shutter "punch" feedback on the stage border ---- */
+.camera-stage.is-capturing {
+  animation: shutterPunch 220ms var(--ease-out);
+}
+@keyframes shutterPunch {
+  0%   { box-shadow: var(--shadow-lg), 0 0 0 0 rgba(255,255,255,0.6); }
+  100% { box-shadow: var(--shadow-lg), 0 0 0 18px rgba(255,255,255,0); }
+}
+
+/* ---- Review slot photo pop in when a photo is (re)captured ---- */
+.review-strip__slot-img.is-fresh {
+  animation: photoPop var(--duration-normal) var(--ease-out);
+}
+@keyframes photoPop {
+  from { opacity: 0; transform: scale(1.06); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* ---- Final strip reveal ---- */
+.final-preview__strip {
+  animation: stripReveal var(--duration-slow) var(--ease-out);
+}
+@keyframes stripReveal {
+  from { opacity: 0; transform: translateY(24px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ---- Success checkmark ---- */
+.done-check {
+  animation: checkPop 520ms var(--ease-out);
+}
+@keyframes checkPop {
+  0%   { transform: scale(0); opacity: 0; }
+  60%  { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); }
+}
+
+/* ---- Toasts ---- */
+.toast {
+  animation: toastIn var(--duration-normal) var(--ease-out);
+}
+@keyframes toastIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---- Generic spinner (used by loading states) ---- */
+.spinner {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-accent);
+  animation: spin 800ms linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }

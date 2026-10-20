@@ -1,0 +1,43 @@
+{
+  "name": "Arangkada Meow",
+  "description": "Cat-themed navy polaroid strip with #back2pisay #meow \u2014 Arangkada 2026.",
+  "author": "PSHS-IRC",
+  "thumbnail": "thumbnail.png",
+  "frame": "frame.png",
+  "background": "#1a2550",
+  "output": {
+    "width": 709,
+    "height": 1999
+  },
+  "photos": [
+    {
+      "x": 38,
+      "y": 78,
+      "width": 647,
+      "height": 387,
+      "rotation": 0
+    },
+    {
+      "x": 49,
+      "y": 558,
+      "width": 606,
+      "height": 309,
+      "rotation": 0
+    },
+    {
+      "x": 50,
+      "y": 970,
+      "width": 625,
+      "height": 313,
+      "rotation": 0
+    },
+    {
+      "x": 66,
+      "y": 1377,
+      "width": 603,
+      "height": 315,
+      "rotation": 0
+    }
+  ],
+  "created_at": "2026-07-19T22:28:54.304799"
+}

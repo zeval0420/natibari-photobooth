@@ -1,0 +1,43 @@
+{
+  "name": "Paper",
+  "description": "Clean cream-toned strip \u2014 Arangkada 2026.",
+  "author": "PSHS-IRC",
+  "thumbnail": "thumbnail.png",
+  "frame": "frame.png",
+  "background": "#F5EDE4",
+  "output": {
+    "width": 709,
+    "height": 2000
+  },
+  "photos": [
+    {
+      "x": 141,
+      "y": 135,
+      "width": 433,
+      "height": 268,
+      "rotation": 0
+    },
+    {
+      "x": 140,
+      "y": 551,
+      "width": 434,
+      "height": 272,
+      "rotation": 0
+    },
+    {
+      "x": 140,
+      "y": 959,
+      "width": 435,
+      "height": 272,
+      "rotation": 0
+    },
+    {
+      "x": 140,
+      "y": 1379,
+      "width": 435,
+      "height": 271,
+      "rotation": 0
+    }
+  ],
+  "created_at": "2026-07-13T11:38:14.825080"
+}

@@ -1,0 +1,54 @@
+{
+    "session_id": "2026-07-21_09-04-32",
+    "created_at": "2026-07-21T09:04:32+08:00",
+    "template": "11-arangkada-pink",
+    "photos": {
+        "1": "raw/photo1.jpg",
+        "2": "raw/photo2.jpg",
+        "3": "raw/photo3.jpg",
+        "4": "raw/photo4.jpg"
+    },
+    "strip": null,
+    "print_status": "not_printed",
+    "settings_snapshot": {
+        "camera": {
+            "preferred_device_label": "",
+            "mirror_preview": true,
+            "resolution": {
+                "width": 1280,
+                "height": 720
+            }
+        },
+        "countdown": {
+            "seconds": 3,
+            "play_sound": true
+        },
+        "audio": {
+            "countdown_sound": "assets/sounds/beep.wav",
+            "shutter_sound": "assets/sounds/shutter.wav",
+            "volume": 0.8
+        },
+        "printing": {
+            "auto_print": false,
+            "printer_name": "",
+            "paper_size": "4x6",
+            "copies": 1,
+            "margins_mm": 5,
+            "scale_percent": 100
+        },
+        "storage": {
+            "sessions_dir": "sessions",
+            "jpeg_quality": 92
+        },
+        "templates": {
+            "default_template": "01-classic-strip"
+        },
+        "admin": {
+            "passcode_hash": "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4"
+        },
+        "ui": {
+            "dark_mode": "light",
+            "idle_return_seconds": 300
+        }
+    }
+}

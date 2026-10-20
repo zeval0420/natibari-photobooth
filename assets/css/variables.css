@@ -1,0 +1,105 @@
+/* ==========================================================================
+   assets/css/variables.css
+   Design tokens for the Opening of Classes Photobooth.
+   Theme: modern minimalist kiosk — white surfaces, confident blue accent,
+   generous rounding, big touch targets. Dark mode overrides the same
+   token names so every component file only ever reads variables.
+   ========================================================================== */
+
+:root {
+  /* ---- Brand & accent ---- */
+  --color-accent: #2563eb;          /* primary blue */
+  --color-accent-strong: #1d4ed8;
+  --color-accent-soft: #eaf1ff;
+  --color-accent-contrast: #ffffff;
+
+  /* ---- Surfaces ---- */
+  --color-bg: #FFFDF5;              /* app backdrop, warm cream */
+  --color-surface: #ffffff;         /* cards, panels */
+  --color-surface-raised: #ffffff;
+  --color-surface-sunken: #f1f4f9;
+  --color-border: #e3e8f0;
+
+  /* ---- Text ---- */
+  --color-text: #14181f;
+  --color-text-muted: #5b6472;
+  --color-text-faint: #92989f;
+  --color-on-accent: #ffffff;
+
+  /* ---- Status ---- */
+  --color-success: #16a34a;
+  --color-success-soft: #e9f8ef;
+  --color-danger: #dc2626;
+  --color-danger-soft: #fdecec;
+  --color-warning: #d97706;
+
+  /* ---- Shape ---- */
+  --radius-sm: 10px;
+  --radius-md: 18px;
+  --radius-lg: 28px;
+  --radius-pill: 999px;
+
+  /* ---- Elevation ---- */
+  --shadow-sm: 0 1px 2px rgba(20, 24, 31, 0.06), 0 1px 1px rgba(20,24,31,0.04);
+  --shadow-md: 0 8px 24px rgba(20, 24, 31, 0.08);
+  --shadow-lg: 0 20px 48px rgba(20, 24, 31, 0.16);
+  --shadow-accent: 0 12px 28px rgba(37, 99, 235, 0.28);
+
+  /* ---- Spacing scale ---- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+
+  /* ---- Typography ---- */
+  --font-display: "Plus Jakarta Sans", "Segoe UI", "Inter", system-ui, sans-serif;
+  --font-body: "Inter", "Segoe UI", system-ui, sans-serif;
+
+  /* ---- Motion ---- */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --duration-fast: 160ms;
+  --duration-normal: 280ms;
+  --duration-slow: 480ms;
+
+  /* ---- Touch targets ---- */
+  --tap-min: 64px;
+}
+
+/* ==========================================================================
+   Dark mode — same token names, kiosk-friendly low-glare palette.
+   Triggered by .theme-dark on <html>, set by ui-theme.js (manual toggle)
+   or automatically from Settings ui.dark_mode = "auto" (prefers-color-scheme).
+   ========================================================================== */
+html.theme-dark {
+  --color-accent: #4f8bff;
+  --color-accent-strong: #6f9fff;
+  --color-accent-soft: #16233f;
+  --color-accent-contrast: #0b1220;
+
+  --color-bg: #0b0e14;
+  --color-surface: #141925;
+  --color-surface-raised: #1b2230;
+  --color-surface-sunken: #0f131c;
+  --color-border: #262e3d;
+
+  --color-text: #f2f4f8;
+  --color-text-muted: #aab2c2;
+  --color-text-faint: #717a8c;
+  --color-on-accent: #ffffff;
+
+  --color-success: #34d399;
+  --color-success-soft: #0f2a20;
+  --color-danger: #f87171;
+  --color-danger-soft: #2a1414;
+  --color-warning: #fbbf24;
+
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.4);
+  --shadow-md: 0 8px 24px rgba(0,0,0,0.45);
+  --shadow-lg: 0 20px 48px rgba(0,0,0,0.55);
+  --shadow-accent: 0 12px 28px rgba(79, 139, 255, 0.35);
+}

@@ -1,0 +1,43 @@
+{
+  "name": "Minecraft 1",
+  "description": "Silver-framed wide-slot strip \u2014 Arangkada 2026.",
+  "author": "PSHS-IRC",
+  "thumbnail": "thumbnail.png",
+  "frame": "frame.png",
+  "background": "#7F7F7F",
+  "output": {
+    "width": 709,
+    "height": 2000
+  },
+  "photos": [
+    {
+      "x": 71,
+      "y": 186,
+      "width": 566,
+      "height": 372,
+      "rotation": 0
+    },
+    {
+      "x": 71,
+      "y": 581,
+      "width": 566,
+      "height": 371,
+      "rotation": 0
+    },
+    {
+      "x": 71,
+      "y": 977,
+      "width": 565,
+      "height": 372,
+      "rotation": 0
+    },
+    {
+      "x": 71,
+      "y": 1375,
+      "width": 566,
+      "height": 373,
+      "rotation": 0
+    }
+  ],
+  "created_at": "2026-07-13T11:38:17.413189"
+}

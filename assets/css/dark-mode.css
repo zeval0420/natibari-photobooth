@@ -1,0 +1,45 @@
+/* ==========================================================================
+   assets/css/dark-mode.css
+   Most of dark mode is just the --color-* token swap in variables.css
+   (html.theme-dark). This file only holds the handful of tweaks that
+   genuinely need different treatment in the dark theme rather than a
+   simple color substitution.
+   ========================================================================== */
+
+html.theme-dark .welcome__glow {
+  background: radial-gradient(circle, var(--color-accent-soft) 0%, transparent 72%);
+  opacity: 0.8;
+}
+
+/* Photos/strips look better on a near-black canvas than pure black */
+html.theme-dark .camera-stage,
+html.theme-dark .template-card__thumb {
+  background: #05070b;
+}
+
+/* Soften thumbnails slightly so bright captured photos don't blow out the dark UI */
+html.theme-dark .review-strip__slot-img,
+html.theme-dark .template-card__thumb img {
+  filter: brightness(0.97);
+}
+
+/* Inputs in the admin pages */
+html.theme-dark input,
+html.theme-dark select,
+html.theme-dark textarea {
+  background: var(--color-surface-sunken);
+  color: var(--color-text);
+  border-color: var(--color-border);
+}
+
+/* Scrollbars */
+html.theme-dark .scroll-region::-webkit-scrollbar-thumb {
+  background: #2c3445;
+}
+
+/* Toasts stay legible on dark surfaces */
+html.theme-dark .toast {
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+}

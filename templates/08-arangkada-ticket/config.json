@@ -1,0 +1,43 @@
+{
+  "name": "Music Player",
+  "description": "Classic maroon event-ticket design \u2014 PSHS-IRC Arangkada 2026.",
+  "author": "PSHS-IRC",
+  "thumbnail": "thumbnail.png",
+  "frame": "frame.png",
+  "background": "#f0ece6",
+  "output": {
+    "width": 709,
+    "height": 2000
+  },
+  "photos": [
+    {
+      "x": 77,
+      "y": 137,
+      "width": 553,
+      "height": 350,
+      "rotation": 0
+    },
+    {
+      "x": 77,
+      "y": 535,
+      "width": 553,
+      "height": 351,
+      "rotation": 0
+    },
+    {
+      "x": 77,
+      "y": 934,
+      "width": 553,
+      "height": 350,
+      "rotation": 0
+    },
+    {
+      "x": 77,
+      "y": 1332,
+      "width": 553,
+      "height": 351,
+      "rotation": 0
+    }
+  ],
+  "created_at": "2026-07-09T06:09:34.907533"
+}

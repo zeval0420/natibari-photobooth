@@ -1,0 +1,6 @@
+# Apache configuration (ignored by PHP's built-in dev server / nginx).
+# Disable directory listing across the whole project.
+Options -Indexes
+
+# Pretty error handling: don't leak filesystem paths in production.
+# (APP_DEBUG in includes/bootstrap.php controls PHP's own error display.)

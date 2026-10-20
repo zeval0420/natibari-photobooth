@@ -1,0 +1,124 @@
+/* ==========================================================================
+   assets/css/main.css
+   Base reset, app shell layout, typography, and the "screen" system that
+   app.js uses to move through the workflow (welcome -> gallery -> camera
+   -> review -> final -> done). Each <section class="screen"> is a full
+   step; only one carries .screen--active at a time.
+   ========================================================================== */
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  background: var(--color-bg);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden; /* kiosk app: no page scroll, screens manage their own */
+}
+
+h1, h2, h3 { font-family: var(--font-display); margin: 0; }
+p { margin: 0; }
+button { font-family: inherit; }
+
+img { max-width: 100%; display: block; }
+
+/* ---- App shell ---- */
+#app {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background: var(--color-bg);
+}
+
+.screen {
+  position: absolute;
+  inset: 0;
+  display: none;
+  flex-direction: column;
+  opacity: 0;
+}
+
+.screen--active {
+  display: flex;
+  opacity: 1;
+}
+
+/* Crossfade + gentle rise handled in animations.css via .screen--enter */
+
+.screen__inner {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: var(--space-6) var(--space-5);
+}
+
+#screen-camera .screen__inner {
+  padding: var(--space-6) var(--space-2);
+  max-width: none;
+  min-height: 0;
+  gap: var(--space-4);
+}
+
+/* ---- Top bar shared by most screens ---- */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-5) var(--space-6) 0;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--color-text);
+}
+
+.brand__dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--color-accent);
+}
+
+.clock {
+  font-size: 14px;
+  color: var(--color-text-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- Scrollable regions inside a screen (gallery grid, review grid) ---- */
+.scroll-region {
+  overflow-y: auto;
+  flex: 1;
+  -webkit-overflow-scrolling: touch;
+}
+.scroll-region::-webkit-scrollbar { width: 8px; }
+.scroll-region::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: var(--radius-pill);
+}
+
+/* ---- Utility ---- */
+.center-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.muted { color: var(--color-text-muted); }
+.faint { color: var(--color-text-faint); }
+.hidden { display: none !important; }
+.spacer { flex: 1; }
+
+/* ---- Responsive base ---- */
+@media (max-width: 720px) {
+  .screen__inner { padding: var(--space-4); }
+  .topbar { padding: var(--space-4) var(--space-4) 0; }
+}

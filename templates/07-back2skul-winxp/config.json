@@ -1,0 +1,43 @@
+{
+  "name": "Movie Ticket",
+  "description": "Nostalgic Windows XP desktop-themed strip with dialog-box photo frames.",
+  "author": "PSHS-IRC",
+  "thumbnail": "thumbnail.png",
+  "frame": "frame.png",
+  "background": "#1c8fcb",
+  "output": {
+    "width": 709,
+    "height": 2000
+  },
+  "photos": [
+    {
+      "x": 80,
+      "y": 154,
+      "width": 551,
+      "height": 328,
+      "rotation": 0
+    },
+    {
+      "x": 79,
+      "y": 516,
+      "width": 554,
+      "height": 330,
+      "rotation": 0
+    },
+    {
+      "x": 79,
+      "y": 878,
+      "width": 552,
+      "height": 336,
+      "rotation": 0
+    },
+    {
+      "x": 74,
+      "y": 1237,
+      "width": 557,
+      "height": 344,
+      "rotation": 0
+    }
+  ],
+  "created_at": "2026-07-09T06:09:34.028584"
+}
