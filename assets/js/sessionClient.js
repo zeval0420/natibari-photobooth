@@ -32,6 +32,10 @@ export const SessionClient = {
     return apiPost('api/strip_accept.php', { session_id: sessionId, ...print });
   },
 
+  shareStrip(sessionId) {
+    return apiPost('api/strip_share.php', { session_id: sessionId });
+  },
+
   getKioskPrinters() {
     return apiFetch('api/kiosk_printers.php');
   },

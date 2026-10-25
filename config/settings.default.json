@@ -34,6 +34,11 @@
       "credentials_file": "drive-service-account.json"
     }
   },
+  "sharing": {
+    "enabled": true,
+    "providers": ["litterbox", "catbox", "uguu"],
+    "litterbox_expiry": "72h"
+  },
   "templates": {
     "default_template": "01-classic-strip"
   },

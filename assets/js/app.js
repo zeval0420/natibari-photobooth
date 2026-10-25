@@ -14,7 +14,7 @@ import { CameraController } from './camera.js?v=1';
 import { TemplateGallery } from './templateGallery.js?v=1';
 import { CaptureFlow } from './captureFlow.js?v=2';
 import { ReviewGrid } from './review.js?v=1';
-import { SessionClient } from './sessionClient.js?v=2';
+import { SessionClient } from './sessionClient.js?v=3';
 
 class PhotoboothApp {
   constructor() {
@@ -281,6 +281,9 @@ class PhotoboothApp {
     $('#btn-final-back').addEventListener('click', () => this.showScreen('review'));
     $('#btn-final-redo').addEventListener('click', () => this.startCameraScreen());
     $('#btn-final-accept').addEventListener('click', () => this.acceptAndFinish());
+    $('#btn-final-qr').addEventListener('click', () => this.showQrCode());
+    $('#btn-qr-modal-close').addEventListener('click', () => this.closeQrModal());
+    $('#qr-modal-backdrop').addEventListener('click', () => this.closeQrModal());
   }
 
   /* ---------------------------------------------------------------- */
@@ -407,6 +410,7 @@ class PhotoboothApp {
     this.showScreen('final');
     $('#final-strip-img').src = '';
     $('#btn-final-accept').disabled = true;
+    $('#btn-final-qr').classList.toggle('is-hidden', !this.config.sharing_enabled);
     try {
       const { strip_url } = await SessionClient.generateStrip(this.sessionId);
       $('#final-strip-img').src = strip_url;
@@ -414,6 +418,33 @@ class PhotoboothApp {
     } catch (e) {
       toast('Could not generate your strip: ' + e.message, 'error');
     }
+  }
+
+  /* ---------------------------------------------------------------- */
+  /* Download QR code (strip is uploaded to a free image host)         */
+  /* ---------------------------------------------------------------- */
+  async showQrCode() {
+    const body = $('#qr-modal-body');
+    const note = $('#qr-modal-note');
+    $('#qr-modal').classList.remove('is-hidden');
+    body.innerHTML = '<div class="spinner"></div>';
+    note.textContent = 'Uploading your strip…';
+    try {
+      const { url } = await SessionClient.shareStrip(this.sessionId);
+      const qr = window.qrcode(0, 'M');
+      qr.addData(url);
+      qr.make();
+      body.innerHTML = qr.createSvgTag({ cellSize: 6, margin: 0, scalable: true });
+      note.textContent = 'Point your phone camera at the code. Anyone with the link can view the photo.';
+    } catch (e) {
+      body.innerHTML = '';
+      body.appendChild(el('div', { class: 'qr-modal__error' }, 'Could not create a download code — check the internet connection. Your strip is still saved.'));
+      note.textContent = e.message;
+    }
+  }
+
+  closeQrModal() {
+    $('#qr-modal').classList.add('is-hidden');
   }
 
   /* ---------------------------------------------------------------- */

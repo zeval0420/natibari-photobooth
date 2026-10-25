@@ -114,6 +114,7 @@ require_once __DIR__ . '/includes/bootstrap.php';
         <img class="final-preview__strip" id="final-strip-img" alt="Your final photo strip">
         <div class="final-preview__actions">
           <button class="btn btn--primary btn--xl" id="btn-final-accept">Accept &amp; Finish</button>
+          <button class="btn btn--secondary btn--xl is-hidden" id="btn-final-qr">Get QR Code</button>
           <button class="btn btn--secondary btn--xl" id="btn-final-redo">Retake Everything</button>
         </div>
       </div>
@@ -166,10 +167,24 @@ require_once __DIR__ . '/includes/bootstrap.php';
   </div>
 </div>
 
+<!-- ============================================================ -->
+<!-- Download QR modal                                              -->
+<!-- ============================================================ -->
+<div class="camera-modal is-hidden" id="qr-modal">
+  <div class="camera-modal__backdrop" id="qr-modal-backdrop"></div>
+  <div class="camera-modal__dialog qr-modal__dialog">
+    <button class="camera-modal__close" id="btn-qr-modal-close" aria-label="Close">&times;</button>
+    <div class="camera-modal__header">Scan to download</div>
+    <div class="qr-modal__body" id="qr-modal-body"></div>
+    <p class="faint print-modal__note" id="qr-modal-note"></p>
+  </div>
+</div>
+
 <!-- Hidden audio elements; sources are set dynamically from Settings -->
 <audio id="audio-countdown" preload="auto"></audio>
 <audio id="audio-shutter" preload="auto"></audio>
 
+<script src="assets/js/vendor/qrcode.js"></script>
 <script type="module" src="assets/js/app.js?v=<?= time() ?>"></script>
 </body>
 </html>
