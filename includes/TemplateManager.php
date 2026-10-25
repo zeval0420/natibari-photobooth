@@ -62,7 +62,7 @@ class TemplateManager
             return null;
         }
 
-        // Required fields per the spec: name, thumbnail, frame, 4 photo positions, output size.
+        // Required fields per the spec: name, thumbnail, frame, photo positions, output size.
         $required = ['name', 'thumbnail', 'frame', 'output', 'photos'];
         foreach ($required as $field) {
             if (!array_key_exists($field, $config)) {
@@ -70,8 +70,8 @@ class TemplateManager
                 return null;
             }
         }
-        if (!is_array($config['photos']) || count($config['photos']) !== 4) {
-            error_log("Template '$id' must define exactly 4 photo positions — skipped.");
+        if (!is_array($config['photos']) || count($config['photos']) < 1 || count($config['photos']) > 8) {
+            error_log("Template '$id' must define between 1 and 8 photo positions — skipped.");
             return null;
         }
 

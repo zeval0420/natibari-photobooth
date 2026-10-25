@@ -12,9 +12,9 @@
 import { $, el, toast, wait } from './utils.js?v=1';
 import { CameraController } from './camera.js?v=1';
 import { TemplateGallery } from './templateGallery.js?v=1';
-import { CaptureFlow } from './captureFlow.js?v=1';
+import { CaptureFlow } from './captureFlow.js?v=2';
 import { ReviewGrid } from './review.js?v=1';
-import { SessionClient } from './sessionClient.js?v=1';
+import { SessionClient } from './sessionClient.js?v=2';
 
 class PhotoboothApp {
   constructor() {
@@ -33,6 +33,8 @@ class PhotoboothApp {
     this.idleTimer = null;
     this.logoTapCount = 0;
     this.logoTapTimer = null;
+    this.printChoice = this.loadPrintChoice(); // { printer, paper_size } from localStorage
+    this.printOptions = null;                  // { printers, paper_sizes, current } from the server
 
     this.camera = new CameraController($('#camera-video'));
     this.gallery = new TemplateGallery($('#template-grid'));
@@ -105,7 +107,7 @@ class PhotoboothApp {
       const template = this.gallery.getSelected() || this.gallery.templates[0];
       const w = template?.photos[0]?.width || 1280;
       const h = template?.photos[0]?.height || 720;
-      await this.camera.start({ width: { min: w, ideal: 1280 }, height: { min: h, ideal: 720 } });
+      await this.camera.start();
       this.camera.setMirrored(this.config.mirror_preview);
       this.attachModalVideo();
     } catch (_) { /* Camera will start when user clicks Continue */ }
@@ -165,6 +167,76 @@ class PhotoboothApp {
   }
 
   /* ---------------------------------------------------------------- */
+  /* Printer & paper modal                                              */
+  /* ---------------------------------------------------------------- */
+  loadPrintChoice() {
+    try {
+      return JSON.parse(localStorage.getItem('photobooth_print')) || {};
+    } catch (_) {
+      return {};
+    }
+  }
+
+  setPrintChoice(patch) {
+    this.printChoice = { ...this.printChoice, ...patch };
+    localStorage.setItem('photobooth_print', JSON.stringify(this.printChoice));
+    this.renderPrintModal();
+  }
+
+  async openPrintModal() {
+    $('#print-modal').classList.remove('is-hidden');
+    try {
+      this.printOptions = await SessionClient.getKioskPrinters();
+    } catch (e) {
+      toast('Could not load printers: ' + e.message, 'error');
+      this.printOptions = this.printOptions || { printers: [], paper_sizes: ['5R'], current: {} };
+    }
+    this.renderPrintModal();
+  }
+
+  closePrintModal() {
+    $('#print-modal').classList.add('is-hidden');
+  }
+
+  /** Effective choice = what the guest/operator picked, else the saved defaults. */
+  effectivePrint() {
+    const cur = this.printOptions?.current || {};
+    const sizes = this.printOptions?.paper_sizes || [];
+    const printers = (this.printOptions?.printers || []).map((p) => p.name);
+    const printer = printers.includes(this.printChoice.printer) ? this.printChoice.printer : (cur.printer || '');
+    const paper = sizes.includes(this.printChoice.paper_size) ? this.printChoice.paper_size : (cur.paper_size || '5R');
+    return { printer, paper_size: paper };
+  }
+
+  renderPrintModal() {
+    if (!this.printOptions) return;
+    const { printers, paper_sizes } = this.printOptions;
+    const active = this.effectivePrint();
+
+    const list = $('#print-modal-printers');
+    list.innerHTML = '';
+    if (printers.length === 0) {
+      list.appendChild(el('div', { class: 'camera-modal__item', style: 'cursor:default;color:var(--color-text-muted)' }, 'No printers detected'));
+    }
+    printers.forEach((p) => {
+      const suffix = /offline|error|paused/i.test(p.status) ? ` (${p.status})` : '';
+      list.appendChild(el('button', {
+        class: 'camera-modal__item' + (p.name === active.printer ? ' is-active' : ''),
+        onClick: () => this.setPrintChoice({ printer: p.name }),
+      }, p.name + suffix));
+    });
+
+    const papers = $('#print-modal-papers');
+    papers.innerHTML = '';
+    paper_sizes.forEach((size) => {
+      papers.appendChild(el('button', {
+        class: 'print-modal__paper' + (size === active.paper_size ? ' is-active' : ''),
+        onClick: () => this.setPrintChoice({ paper_size: size }),
+      }, size));
+    });
+  }
+
+  /* ---------------------------------------------------------------- */
   /* Idle timeout -> auto-return to gallery                            */
   /* ---------------------------------------------------------------- */
   resetIdleTimer() {
@@ -191,6 +263,10 @@ class PhotoboothApp {
     });
 
     $('#btn-gallery-continue').addEventListener('click', () => this.startCameraScreen());
+
+    $('#btn-print-picker').addEventListener('click', () => this.openPrintModal());
+    $('#btn-print-modal-close').addEventListener('click', () => this.closePrintModal());
+    $('#print-modal-backdrop').addEventListener('click', () => this.closePrintModal());
 
     $('#btn-camera-picker').addEventListener('click', () => this.openCameraModal());
     $('#btn-camera-modal-close').addEventListener('click', () => this.closeCameraModal());
@@ -249,10 +325,7 @@ class PhotoboothApp {
 
     if (!this.camera.stream) {
       try {
-        await this.camera.start({
-          width: { min: this.template.photos[0].width, ideal: 1280 },
-          height: { min: this.template.photos[0].height, ideal: 720 },
-        });
+        await this.camera.start();
       } catch (e) {
         toast('Camera access was denied or unavailable: ' + e.message, 'error');
       }
@@ -350,7 +423,7 @@ class PhotoboothApp {
     $('#btn-final-accept').disabled = true;
     let printResult = { status: 'skipped' };
     try {
-      const res = await SessionClient.acceptStrip(this.sessionId);
+      const res = await SessionClient.acceptStrip(this.sessionId, this.printChoice);
       printResult = res.print_result;
     } catch (e) {
       toast('Could not finish: ' + e.message, 'error');

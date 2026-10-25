@@ -37,6 +37,9 @@ require_once __DIR__ . '/includes/bootstrap.php';
       <div class="brand" id="brand-logo"><span class="brand__dot"></span></div>
       <h2>Choose a Frame</h2>
       <div style="display: flex; align-items: center; gap: 8px;">
+        <button class="btn btn--ghost btn-camera-picker__btn" id="btn-print-picker" title="Printer &amp; paper size">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        </button>
         <button class="btn btn--ghost btn-camera-picker__btn" id="btn-camera-picker" title="Preview camera">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
         </button>
@@ -145,6 +148,21 @@ require_once __DIR__ . '/includes/bootstrap.php';
     </div>
     <div class="camera-modal__header">Switch Camera</div>
     <div class="camera-modal__list" id="camera-modal-list"></div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- Printer & paper modal                                         -->
+<!-- ============================================================ -->
+<div class="camera-modal is-hidden" id="print-modal">
+  <div class="camera-modal__backdrop" id="print-modal-backdrop"></div>
+  <div class="camera-modal__dialog">
+    <button class="camera-modal__close" id="btn-print-modal-close" aria-label="Close">&times;</button>
+    <div class="camera-modal__header">Printer</div>
+    <div class="camera-modal__list" id="print-modal-printers"></div>
+    <div class="camera-modal__header print-modal__gap">Paper size</div>
+    <div class="print-modal__papers" id="print-modal-papers"></div>
+    <p class="faint print-modal__note">The strip is scaled to fit the selected paper. The default is 5R (5 &times; 7 in).</p>
   </div>
 </div>
 

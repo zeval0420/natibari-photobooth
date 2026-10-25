@@ -165,13 +165,13 @@ class Compositor
      * @param string $relativeStripPath
      * @return string relative path to the side-by-side image
      */
-    public static function generateA5SideBySide(string $sessionId, string $relativeStripPath): string
+    public static function generateSideBySide(string $sessionId, string $relativeStripPath): string
     {
         $stripPath = SessionManager::abs($relativeStripPath);
         
         $src = self::loadAnyImage($stripPath);
         if ($src === null) {
-            throw new Exception("Failed to load strip image for A5 side-by-side composition.");
+            throw new Exception("Failed to load strip image for side-by-side composition.");
         }
         
         $w = imagesx($src);
@@ -205,13 +205,13 @@ class Compositor
     /**
      * The file that actually goes to the printer, per printing.layout:
      *   single -> the strip as-is
-     *   two_up -> two copies side by side (print on A5, cut in half)
+     *   two_up -> two copies side by side (print on 5R, cut in half)
      * @return string relative path inside the session folder
      */
     public static function printableFor(string $sessionId, array $meta): string
     {
         if (Settings::get('printing.layout', 'single') === 'two_up') {
-            return self::generateA5SideBySide($sessionId, $meta['strip']);
+            return self::generateSideBySide($sessionId, $meta['strip']);
         }
         return $meta['strip'];
     }

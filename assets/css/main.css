@@ -57,6 +57,12 @@ img { max-width: 100%; display: block; }
   padding: var(--space-6) var(--space-5);
 }
 
+/* Let the gallery's scroll-region shrink inside the flex column so the template
+   grid scrolls (with the Continue button pinned) instead of being clipped. */
+#screen-gallery .screen__inner { min-height: 0; }
+#screen-gallery .scroll-region { min-height: 0; overscroll-behavior: contain; }
+#screen-gallery .btn--block { flex-shrink: 0; margin-top: var(--space-3); }
+
 #screen-camera .screen__inner {
   padding: var(--space-6) var(--space-2);
   max-width: none;

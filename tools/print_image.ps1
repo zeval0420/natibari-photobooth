@@ -3,7 +3,7 @@
 # software needed). Called by PrintManager on Windows.
 #
 #   powershell -NoProfile -ExecutionPolicy Bypass -File print_image.ps1 `
-#       -Image C:\path\strip.png -Printer "Name" -Copies 1 -Paper A5 `
+#       -Image C:\path\strip.png -Printer "Name" -Copies 1 -Paper 5R `
 #       -MarginMm 5 -ScalePercent 100
 #
 # -OutFile is for testing only: when set, the job is written to that file
@@ -24,7 +24,7 @@ Add-Type -AssemblyName System.Drawing
 
 # Paper sizes in 1/100 inch (portrait).
 $sizes = @{
-    '4x6' = @(400, 600); '5x7' = @(500, 700); '2x6' = @(200, 600)
+    '4x6' = @(400, 600); '5R' = @(500, 700); '5x7' = @(500, 700); '2x6' = @(200, 600)
     'A4' = @(827, 1169); 'A5' = @(583, 827); 'A6' = @(413, 583); 'Letter' = @(850, 1100)
 }
 

@@ -1,0 +1,35 @@
+{
+  "name": "Horror Polaroids",
+  "description": "Halloween photo strip.",
+  "author": "PSHS-IRC",
+  "thumbnail": "thumbnail.png",
+  "frame": "frame.png",
+  "background": "#14100F",
+  "output": {
+    "width": 600,
+    "height": 1800
+  },
+  "photos": [
+    {
+      "x": 267,
+      "y": 267,
+      "width": 345,
+      "height": 330,
+      "rotation": 12.0
+    },
+    {
+      "x": 10,
+      "y": 769,
+      "width": 335,
+      "height": 321,
+      "rotation": -12.0
+    },
+    {
+      "x": 221,
+      "y": 1288,
+      "width": 337,
+      "height": 322,
+      "rotation": 12.0
+    }
+  ]
+}

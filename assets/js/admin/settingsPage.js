@@ -124,7 +124,7 @@ function printingTab(s) {
     card('What gets printed', 'Choose how the strip is laid out on the paper.', [
       choiceCards('layout', [
         { value: 'single', icon: '▮', title: 'One strip', desc: 'Prints the strip once, centred on the page.' },
-        { value: 'two_up', icon: '▮▮', title: 'Two strips side by side', desc: 'Prints two copies on one sheet (e.g. A5) — cut down the middle.' },
+        { value: 'two_up', icon: '▮▮', title: 'Two strips side by side', desc: 'Prints two copies on one sheet (e.g. 5R) — cut down the middle.' },
       ], s.printing.layout || 'single'),
       field('Paper size', el('select', { id: 'f-paper-size' }, PAPER_OPTIONS(s.printing.paper_size))),
       field('Copies', el('input', { type: 'number', id: 'f-copies', min: '1', max: '20', value: s.printing.copies })),
@@ -133,7 +133,7 @@ function printingTab(s) {
     ]),
   ];
 }
-const PAPER_OPTIONS = (current) => ['4x6', '5x7', '2x6', 'A4', 'A5', 'A6', 'Letter'].map((sz) =>
+const PAPER_OPTIONS = (current) => ['5R', '4x6', '5x7', '2x6', 'A4', 'A5', 'A6', 'Letter'].map((sz) =>
   el('option', { value: sz, ...(sz === current ? { selected: 'selected' } : {}) }, sz));
 
 function storageTab(s) {

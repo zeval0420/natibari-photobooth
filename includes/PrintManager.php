@@ -17,7 +17,7 @@
  */
 class PrintManager
 {
-    public const PAPER_SIZES = ['4x6', '5x7', '2x6', 'A4', 'A5', 'A6', 'Letter'];
+    public const PAPER_SIZES = ['5R', '4x6', '5x7', '2x6', 'A4', 'A5', 'A6', 'Letter'];
 
     public static function isWindows(): bool
     {
@@ -32,16 +32,21 @@ class PrintManager
 
     /**
      * Print (or simulate) one image using the current printing settings.
-     * @param array $override optional keys: printer, copies, paper_size
+     * @param array $override optional keys: printer, copies, paper_size, fit
+     *                        (fit = true: zero margin, 100% scale — image fills the paper)
      */
     public static function printFile(string $absoluteImagePath, ?string $paperSizeOverride = null, array $override = []): array
     {
         $p = Settings::get('printing', []);
         $copies = max(1, min(20, (int)($override['copies'] ?? $p['copies'] ?? 1)));
         $printer = trim((string)($override['printer'] ?? $p['printer_name'] ?? ''));
-        $paper = $paperSizeOverride ?? ($p['paper_size'] ?? '4x6');
+        $paper = $paperSizeOverride ?? ($override['paper_size'] ?? $p['paper_size'] ?? '5R');
         $margins = max(0.0, (float)($p['margins_mm'] ?? 0));
         $scale = max(10, min(200, (int)($p['scale_percent'] ?? 100)));
+        if (!empty($override['fit'])) {
+            $margins = 0.0;
+            $scale = 100;
+        }
 
         if (!is_file($absoluteImagePath)) {
             return ['status' => 'failed', 'reason' => 'File not found.'];
@@ -91,7 +96,7 @@ class PrintManager
 
     private static function cupsCommand(string $file, string $printer, int $copies, string $paper, float $margins, int $scale): string
     {
-        $mediaMap = ['4x6' => 'Custom.4x6in', '5x7' => 'Custom.5x7in', '2x6' => 'Custom.2x6in'];
+        $mediaMap = ['4x6' => 'Custom.4x6in', '5R' => 'Custom.5x7in', '5x7' => 'Custom.5x7in', '2x6' => 'Custom.2x6in'];
         $parts = [
             'lp', '-d', escapeshellarg($printer), '-n', $copies,
             '-o', escapeshellarg('media=' . ($mediaMap[$paper] ?? $paper)),

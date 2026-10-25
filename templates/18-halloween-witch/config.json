@@ -1,0 +1,42 @@
+{
+  "name": "Witching Hour",
+  "description": "Halloween photo strip.",
+  "author": "PSHS-IRC",
+  "thumbnail": "thumbnail.png",
+  "frame": "frame.png",
+  "background": "#C8601A",
+  "output": {
+    "width": 600,
+    "height": 1800
+  },
+  "photos": [
+    {
+      "x": 53,
+      "y": 97,
+      "width": 495,
+      "height": 352,
+      "rotation": 0.0
+    },
+    {
+      "x": 54,
+      "y": 459,
+      "width": 494,
+      "height": 351,
+      "rotation": 0.0
+    },
+    {
+      "x": 53,
+      "y": 819,
+      "width": 495,
+      "height": 351,
+      "rotation": 0.0
+    },
+    {
+      "x": 53,
+      "y": 1178,
+      "width": 494,
+      "height": 353,
+      "rotation": 0.0
+    }
+  ]
+}

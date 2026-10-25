@@ -1,0 +1,42 @@
+{
+  "name": "Trick or Treat",
+  "description": "Halloween photo strip.",
+  "author": "PSHS-IRC",
+  "thumbnail": "thumbnail.png",
+  "frame": "frame.png",
+  "background": "#5A3A66",
+  "output": {
+    "width": 600,
+    "height": 1800
+  },
+  "photos": [
+    {
+      "x": 60,
+      "y": 60,
+      "width": 479,
+      "height": 343,
+      "rotation": 0.0
+    },
+    {
+      "x": 60,
+      "y": 443,
+      "width": 479,
+      "height": 342,
+      "rotation": 0.0
+    },
+    {
+      "x": 60,
+      "y": 825,
+      "width": 479,
+      "height": 342,
+      "rotation": 0.0
+    },
+    {
+      "x": 60,
+      "y": 1207,
+      "width": 479,
+      "height": 342,
+      "rotation": 0.0
+    }
+  ]
+}

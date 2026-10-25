@@ -34,8 +34,9 @@ export class CameraController {
     const buildConstraints = (deviceId) => ({
       audio: false,
       video: {
-        width: toConstraint(opts.width, 1280),
-        height: toConstraint(opts.height, 720),
+        width: toConstraint(opts.width, 1920),
+        height: toConstraint(opts.height, 1080),
+        aspectRatio: opts.aspectRatio ?? { ideal: 16 / 9 },
         facingMode: deviceId ? undefined : 'user',
         deviceId: deviceId ? { exact: deviceId } : undefined,
       },
@@ -89,11 +90,24 @@ export class CameraController {
    * If the preview is mirrored on screen, the capture is mirrored too
    * so the saved photo matches exactly what the user saw of themselves.
    */
-  captureFrame(quality = 0.92) {
+  captureFrame(quality = 0.92, targetAspect = null) {
     const video = this.video;
-    const w = video.videoWidth;
-    const h = video.videoHeight;
-    if (!w || !h) throw new Error('Camera is not ready yet.');
+    const vw = video.videoWidth;
+    const vh = video.videoHeight;
+    if (!vw || !vh) throw new Error('Camera is not ready yet.');
+
+    // Center-crop to the slot's aspect ratio here so the saved photo already
+    // matches the slot and the server's cover-fit has nothing left to crop.
+    let sx = 0, sy = 0, w = vw, h = vh;
+    if (targetAspect && targetAspect > 0) {
+      if (vw / vh > targetAspect) {
+        w = Math.round(vh * targetAspect);
+        sx = Math.round((vw - w) / 2);
+      } else {
+        h = Math.round(vw / targetAspect);
+        sy = Math.round((vh - h) / 2);
+      }
+    }
 
     this.captureCanvas.width = w;
     this.captureCanvas.height = h;
@@ -103,7 +117,7 @@ export class CameraController {
       ctx.translate(w, 0);
       ctx.scale(-1, 1);
     }
-    ctx.drawImage(video, 0, 0, w, h);
+    ctx.drawImage(video, sx, sy, w, h, 0, 0, w, h);
 
     return this.captureCanvas.toDataURL('image/jpeg', quality);
   }

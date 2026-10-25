@@ -248,6 +248,22 @@
 .camera-modal__item:hover { background: var(--color-surface-sunken); }
 .camera-modal__item.is-active { font-weight: 700; color: var(--color-accent); background: var(--color-accent-soft); }
 
+.print-modal__gap { margin-top: var(--space-5); }
+.print-modal__papers { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.print-modal__paper {
+  appearance: none;
+  border: 2px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  cursor: pointer;
+  padding: var(--space-2) var(--space-4);
+  font-size: 15px;
+  border-radius: var(--radius-pill);
+}
+.print-modal__paper:hover { background: var(--color-surface-sunken); }
+.print-modal__paper.is-active { border-color: var(--color-accent); color: var(--color-accent); background: var(--color-accent-soft); font-weight: 700; }
+.print-modal__note { margin-top: var(--space-4); font-size: 13px; }
+
 /* ---------------------------------------------------------------------- */
 /* Template gallery                                                        */
 /* ---------------------------------------------------------------------- */

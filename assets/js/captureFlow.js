@@ -70,6 +70,7 @@ export class CaptureFlow {
     this.highlightEl.style.top = `${box.y + slot.y * scaleY}px`;
     this.highlightEl.style.width = `${slot.width * scaleX}px`;
     this.highlightEl.style.height = `${slot.height * scaleY}px`;
+    this.highlightEl.style.transform = `rotate(${slot.rotation || 0}deg)`;
     this.highlightEl.style.opacity = '1';
   }
 
@@ -95,6 +96,7 @@ export class CaptureFlow {
     img.style.top = `${box.y + slot.y * scaleY}px`;
     img.style.width = `${slot.width * scaleX}px`;
     img.style.height = `${slot.height * scaleY}px`;
+    img.style.transform = `rotate(${slot.rotation || 0}deg)`;
   }
 
   /** Remove all captured slot photos from the template preview. */
@@ -119,7 +121,8 @@ export class CaptureFlow {
       this.shutterAudioEl.play().catch(() => {});
     }
 
-    const dataUrl = this.camera.captureFrame(this.jpegQuality || 0.92);
+    const slot = this.template.photos[slotNumber - 1];
+    const dataUrl = this.camera.captureFrame(this.jpegQuality || 0.92, slot.width / slot.height);
     onProgress({ phase: 'captured', n: slotNumber });
 
     await SessionClient.savePhoto(sessionId, slotNumber, dataUrl);

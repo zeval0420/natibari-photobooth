@@ -19,9 +19,9 @@
   "printing": {
     "auto_print": false,
     "printer_name": "",
-    "paper_size": "4x6",
+    "paper_size": "5R",
     "copies": 1,
-    "margins_mm": 5,
+    "margins_mm": 0,
     "scale_percent": 100,
     "layout": "single"
   },

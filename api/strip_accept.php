@@ -1,7 +1,7 @@
 <?php
 /**
  * api/strip_accept.php
- * POST { session_id }
+ * POST { session_id, printer?, paper_size? }
  * -> { success: true, print_result: {...} }
  *
  * Called when the guest taps "Accept". Honors two settings:
@@ -28,11 +28,23 @@ if (empty($meta['strip'])) {
 
 $meta['accepted_at'] = date('c');
 
+// The kiosk's Printer & paper panel may pick a different printer / paper than
+// the saved defaults; accept only values that are actually installed / known.
+$override = ['fit' => true];
+$wantPrinter = trim((string)($body['printer'] ?? ''));
+if ($wantPrinter !== '' && in_array($wantPrinter, PrintManager::printerNames(), true)) {
+    $override['printer'] = $wantPrinter;
+}
+$wantPaper = (string)($body['paper_size'] ?? '');
+if (in_array($wantPaper, PrintManager::PAPER_SIZES, true)) {
+    $override['paper_size'] = $wantPaper;
+}
+
 $printResult = ['status' => 'skipped', 'reason' => 'Automatic printing is off.'];
 if (Settings::get('printing.auto_print', false)) {
     try {
         $meta['strip_print'] = Compositor::printableFor($sessionId, $meta);
-        $printResult = PrintManager::printFile(SessionManager::abs($meta['strip_print']));
+        $printResult = PrintManager::printFile(SessionManager::abs($meta['strip_print']), null, $override);
     } catch (Throwable $e) {
         $printResult = ['status' => 'failed', 'reason' => $e->getMessage()];
     }
