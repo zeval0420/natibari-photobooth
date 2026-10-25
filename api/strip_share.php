@@ -1,11 +1,12 @@
 <?php
 /**
  * api/strip_share.php
- * POST { session_id }
+ * POST { session_id, kind?: "strip" (default) | "raw" }
  * -> { success: true, url }
  *
- * Uploads the session's final strip to the free image host (once — the URL
- * is cached in metadata.json) so the kiosk can show a download QR code.
+ * Uploads the session's final strip (or, for kind=raw, a ZIP of the raw photos)
+ * to the free image host (once — the URL is cached in metadata.json) so the
+ * kiosk can show download QR codes.
  */
 require_once __DIR__ . '/../includes/bootstrap.php';
 
@@ -26,13 +27,39 @@ if (empty($meta['strip'])) {
     json_error('Strip has not been generated for this session yet', 400);
 }
 
-if (empty($meta['share_url'])) {
+$kind = ($body['kind'] ?? 'strip') === 'raw' ? 'raw' : 'strip';
+$key = $kind === 'raw' ? 'share_raw_url' : 'share_url';
+
+if (empty($meta[$key])) {
+    $tmpZip = null;
     try {
-        $meta['share_url'] = ImageHost::upload(SessionManager::abs($meta['strip']));
+        if ($kind === 'raw') {
+            $photos = glob(SessionManager::rawDir($sessionId) . '/photo*.jpg') ?: [];
+            if (!$photos) {
+                json_error('No raw photos available for this session', 404);
+            }
+            sort($photos, SORT_NATURAL);
+            $tmpZip = tempnam(sys_get_temp_dir(), 'pbraw') . '.zip';
+            $zip = new ZipArchive();
+            if ($zip->open($tmpZip, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
+                throw new RuntimeException('Could not create the photos ZIP');
+            }
+            foreach ($photos as $p) {
+                $zip->addFile($p, basename($p));
+            }
+            $zip->close();
+            $meta[$key] = ImageHost::upload($tmpZip, 'application/zip');
+        } else {
+            $meta[$key] = ImageHost::upload(SessionManager::abs($meta['strip']));
+        }
     } catch (Throwable $e) {
         json_error($e->getMessage(), 502);
+    } finally {
+        if ($tmpZip) {
+            @unlink($tmpZip);
+        }
     }
     SessionManager::saveMetadata($sessionId, $meta);
 }
 
-json_response(['success' => true, 'url' => $meta['share_url']]);
+json_response(['success' => true, 'url' => $meta[$key]]);

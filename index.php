@@ -112,9 +112,19 @@ require_once __DIR__ . '/includes/bootstrap.php';
     <div class="screen__inner">
       <div class="final-preview">
         <img class="final-preview__strip" id="final-strip-img" alt="Your final photo strip">
+        <div class="final-preview__qr is-hidden" id="final-qr">
+          <div class="final-preview__qr-item">
+            <div class="final-preview__qr-code" id="qr-strip"></div>
+            <div class="final-preview__qr-label">Photo strip</div>
+          </div>
+          <div class="final-preview__qr-item">
+            <div class="final-preview__qr-code" id="qr-raw"></div>
+            <div class="final-preview__qr-label">Raw photos (ZIP)</div>
+          </div>
+          <p class="faint final-preview__qr-note" id="qr-note">Scan with your phone camera to download. Anyone with the link can view the photos.</p>
+        </div>
         <div class="final-preview__actions">
           <button class="btn btn--primary btn--xl" id="btn-final-accept">Accept &amp; Finish</button>
-          <button class="btn btn--secondary btn--xl is-hidden" id="btn-final-qr">Get QR Code</button>
           <button class="btn btn--secondary btn--xl" id="btn-final-redo">Retake Everything</button>
         </div>
       </div>
@@ -164,19 +174,6 @@ require_once __DIR__ . '/includes/bootstrap.php';
     <div class="camera-modal__header print-modal__gap">Paper size</div>
     <div class="print-modal__papers" id="print-modal-papers"></div>
     <p class="faint print-modal__note">The strip is scaled to fit the selected paper. The default is 5R (5 &times; 7 in).</p>
-  </div>
-</div>
-
-<!-- ============================================================ -->
-<!-- Download QR modal                                              -->
-<!-- ============================================================ -->
-<div class="camera-modal is-hidden" id="qr-modal">
-  <div class="camera-modal__backdrop" id="qr-modal-backdrop"></div>
-  <div class="camera-modal__dialog qr-modal__dialog">
-    <button class="camera-modal__close" id="btn-qr-modal-close" aria-label="Close">&times;</button>
-    <div class="camera-modal__header">Scan to download</div>
-    <div class="qr-modal__body" id="qr-modal-body"></div>
-    <p class="faint print-modal__note" id="qr-modal-note"></p>
   </div>
 </div>
 

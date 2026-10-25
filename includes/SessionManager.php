@@ -119,6 +119,7 @@ class SessionManager
         $meta = self::getMetadata($sessionId);
         $meta['strip'] = $relativeStripPath;
         $meta['composited_at'] = date('c');
+        unset($meta['share_url'], $meta['share_raw_url']); // a regenerated strip invalidates old uploads
         self::saveMetadata($sessionId, $meta);
     }
 

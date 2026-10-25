@@ -27,8 +27,8 @@ class ImageHost
         return (bool) Settings::get('sharing.enabled', false);
     }
 
-    /** Upload one image; returns its public URL. Throws if every provider fails. */
-    public static function upload(string $absPath): string
+    /** Upload one file (strip PNG or raw-photos ZIP); returns its public URL. Throws if every provider fails. */
+    public static function upload(string $absPath, string $mime = 'image/png'): string
     {
         if (!is_file($absPath)) {
             throw new RuntimeException('File to upload not found');
@@ -37,7 +37,7 @@ class ImageHost
         $errors = [];
         foreach ((array) $providers as $name) {
             try {
-                return self::send((string) $name, $absPath);
+                return self::send((string) $name, $absPath, $mime);
             } catch (Throwable $e) {
                 $errors[] = $name . ': ' . $e->getMessage();
                 error_log('ImageHost ' . $name . ' failed: ' . $e->getMessage());
@@ -46,9 +46,9 @@ class ImageHost
         throw new RuntimeException('Could not upload to any image host (' . implode(' | ', $errors) . ')');
     }
 
-    private static function send(string $provider, string $absPath): string
+    private static function send(string $provider, string $absPath, string $mime): string
     {
-        $file = new CURLFile($absPath, 'image/png', basename($absPath));
+        $file = new CURLFile($absPath, $mime, basename($absPath));
         switch ($provider) {
             case 'litterbox':
                 $expiry = (string) Settings::get('sharing.litterbox_expiry', '72h');

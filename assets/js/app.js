@@ -14,7 +14,7 @@ import { CameraController } from './camera.js?v=1';
 import { TemplateGallery } from './templateGallery.js?v=1';
 import { CaptureFlow } from './captureFlow.js?v=2';
 import { ReviewGrid } from './review.js?v=1';
-import { SessionClient } from './sessionClient.js?v=3';
+import { SessionClient } from './sessionClient.js?v=4';
 
 class PhotoboothApp {
   constructor() {
@@ -281,9 +281,6 @@ class PhotoboothApp {
     $('#btn-final-back').addEventListener('click', () => this.showScreen('review'));
     $('#btn-final-redo').addEventListener('click', () => this.startCameraScreen());
     $('#btn-final-accept').addEventListener('click', () => this.acceptAndFinish());
-    $('#btn-final-qr').addEventListener('click', () => this.showQrCode());
-    $('#btn-qr-modal-close').addEventListener('click', () => this.closeQrModal());
-    $('#qr-modal-backdrop').addEventListener('click', () => this.closeQrModal());
   }
 
   /* ---------------------------------------------------------------- */
@@ -409,42 +406,54 @@ class PhotoboothApp {
   async goToFinal() {
     this.showScreen('final');
     $('#final-strip-img').src = '';
+    $('#final-qr').classList.add('is-hidden');
+    this.qrPromise = null;
     $('#btn-final-accept').disabled = true;
-    $('#btn-final-qr').classList.toggle('is-hidden', !this.config.sharing_enabled);
     try {
       const { strip_url } = await SessionClient.generateStrip(this.sessionId);
       $('#final-strip-img').src = strip_url;
       $('#btn-final-accept').disabled = false;
+      this.qrPromise = this.loadQrCodes();
     } catch (e) {
       toast('Could not generate your strip: ' + e.message, 'error');
     }
   }
 
   /* ---------------------------------------------------------------- */
-  /* Download QR code (strip is uploaded to a free image host)         */
+  /* Download QR codes (uploaded to a free image host, shown inline)   */
   /* ---------------------------------------------------------------- */
-  async showQrCode() {
-    const body = $('#qr-modal-body');
-    const note = $('#qr-modal-note');
-    $('#qr-modal').classList.remove('is-hidden');
-    body.innerHTML = '<div class="spinner"></div>';
-    note.textContent = 'Uploading your strip…';
-    try {
-      const { url } = await SessionClient.shareStrip(this.sessionId);
-      const qr = window.qrcode(0, 'M');
-      qr.addData(url);
-      qr.make();
-      body.innerHTML = qr.createSvgTag({ cellSize: 6, margin: 0, scalable: true });
-      note.textContent = 'Point your phone camera at the code. Anyone with the link can view the photo.';
-    } catch (e) {
-      body.innerHTML = '';
-      body.appendChild(el('div', { class: 'qr-modal__error' }, 'Could not create a download code — check the internet connection. Your strip is still saved.'));
-      note.textContent = e.message;
+  /** Upload strip + raw photos and draw both QR codes. Resolves when done (never rejects). */
+  async loadQrCodes() {
+    const panel = $('#final-qr');
+    if (!this.config.sharing_enabled) {
+      panel.classList.add('is-hidden');
+      return;
     }
-  }
+    const sessionId = this.sessionId;
+    panel.classList.remove('is-hidden');
+    $('#qr-note').textContent = 'Preparing your download codes…';
 
-  closeQrModal() {
-    $('#qr-modal').classList.add('is-hidden');
+    const draw = async (kind, target) => {
+      const box = $(target);
+      box.innerHTML = '<div class="spinner"></div>';
+      try {
+        const { url } = await SessionClient.shareStrip(sessionId, kind);
+        if (sessionId !== this.sessionId) return false;
+        const qr = window.qrcode(0, 'M');
+        qr.addData(url);
+        qr.make();
+        box.innerHTML = qr.createSvgTag({ cellSize: 6, margin: 0, scalable: true });
+        return true;
+      } catch (e) {
+        box.innerHTML = '<span class="faint" style="font-size:12px">Unavailable</span>';
+        return false;
+      }
+    };
+    const results = await Promise.all([draw('strip', '#qr-strip'), draw('raw', '#qr-raw')]);
+    if (sessionId !== this.sessionId) return;
+    $('#qr-note').textContent = results.some(Boolean)
+      ? 'Scan with your phone camera to download. Anyone with the link can view the photos.'
+      : 'Could not create download codes — check the internet connection. Your strip is still saved.';
   }
 
   /* ---------------------------------------------------------------- */
@@ -453,6 +462,8 @@ class PhotoboothApp {
   async acceptAndFinish() {
     $('#btn-final-accept').disabled = true;
     let printResult = { status: 'skipped' };
+    // Let any in-flight QR upload finish: accepting may delete the raw photos.
+    await this.qrPromise;
     try {
       const res = await SessionClient.acceptStrip(this.sessionId, this.printChoice);
       printResult = res.print_result;
