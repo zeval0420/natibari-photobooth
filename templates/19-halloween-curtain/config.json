@@ -1,0 +1,43 @@
+{
+  "name": "Haunted Curtain",
+  "description": "Halloween photo strip.",
+  "author": "PSHS-IRC",
+  "thumbnail": "thumbnail.png",
+  "frame": "frame.png",
+  "background": "#2A0A0A",
+  "output": {
+    "width": 600,
+    "height": 1800
+  },
+  "photos": [
+    {
+      "x": 86,
+      "y": 146,
+      "width": 449,
+      "height": 298,
+      "rotation": 0.0
+    },
+    {
+      "x": 46,
+      "y": 492,
+      "width": 506,
+      "height": 294,
+      "rotation": 0.0
+    },
+    {
+      "x": 47,
+      "y": 846,
+      "width": 506,
+      "height": 294,
+      "rotation": 0.0
+    },
+    {
+      "x": 47,
+      "y": 1192,
+      "width": 507,
+      "height": 294,
+      "rotation": 0.0
+    }
+  ],
+  "priority": 1
+}

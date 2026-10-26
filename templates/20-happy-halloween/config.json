@@ -1,0 +1,43 @@
+{
+  "name": "Happy Halloween",
+  "description": "Halloween photo strip.",
+  "author": "PSHS-IRC",
+  "thumbnail": "thumbnail.png",
+  "frame": "frame.png",
+  "background": "#2B1B3F",
+  "output": {
+    "width": 600,
+    "height": 1800
+  },
+  "photos": [
+    {
+      "x": 47,
+      "y": 219,
+      "width": 513,
+      "height": 302,
+      "rotation": 0.0
+    },
+    {
+      "x": 47,
+      "y": 546,
+      "width": 513,
+      "height": 301,
+      "rotation": 0.0
+    },
+    {
+      "x": 47,
+      "y": 877,
+      "width": 513,
+      "height": 302,
+      "rotation": 0.0
+    },
+    {
+      "x": 47,
+      "y": 1209,
+      "width": 513,
+      "height": 302,
+      "rotation": 0.0
+    }
+  ],
+  "priority": 2
+}
