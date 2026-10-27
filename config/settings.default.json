@@ -17,17 +17,17 @@
     "volume": 0.8
   },
   "printing": {
-    "auto_print": false,
-    "printer_name": "",
+    "auto_print": true,
+    "printer_name": "EPSON L3250 Series",
     "paper_size": "5R",
     "copies": 1,
     "margins_mm": 0,
     "scale_percent": 100,
-    "layout": "single"
+    "layout": "two_up"
   },
   "storage": {
     "save_mode": "both",
-    "jpeg_quality": 92,
+    "jpeg_quality": 95,
     "drive": {
       "enabled": false,
       "folder_id": "",
@@ -38,6 +38,16 @@
     "enabled": true,
     "providers": ["litterbox", "catbox", "uguu"],
     "litterbox_expiry": "72h"
+  },
+  "email": {
+    "enabled": true,
+    "subject": "Natibari Photobooth",
+    "to": ["zeval042009@gmail.com", "danikadanielle.pangilinan@irc.pshs.edu.ph"],
+    "smtp_host": "smtp.gmail.com",
+    "smtp_port": 465,
+    "smtp_user": "",
+    "smtp_pass": "",
+    "from_name": "Natibari Photobooth"
   },
   "templates": {
     "default_template": "01-classic-strip"

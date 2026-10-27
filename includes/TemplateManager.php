@@ -44,6 +44,13 @@ class TemplateManager
                 $templates[] = $template;
             }
         }
+        // Templates with a "priority" in config.json come first (ascending);
+        // the rest keep their alphabetical folder order.
+        usort($templates, function ($a, $b) {
+            $pa = $a['priority'] ?? PHP_INT_MAX;
+            $pb = $b['priority'] ?? PHP_INT_MAX;
+            return $pa <=> $pb ?: strcmp($a['id'], $b['id']);
+        });
         return $templates;
     }
 
@@ -92,6 +99,7 @@ class TemplateManager
             'output' => $config['output'],
             'photos' => $config['photos'],
             'background' => $config['background'] ?? '#FFFFFF',
+            'priority' => isset($config['priority']) ? (int) $config['priority'] : null,
         ];
     }
 

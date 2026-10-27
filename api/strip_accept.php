@@ -61,8 +61,12 @@ if (DriveUploader::enabled()) {
 SessionManager::saveMetadata($sessionId, $meta);
 SessionManager::recordPrintStatus($sessionId, $printResult['status'], $printResult);
 
+// Email the strip + raw photos. If the raw photos are about to be deleted, send first (inline).
+$purge = SessionManager::saveMode() === 'final_only';
+Mailer::dispatch($sessionId, $purge);
+
 // Strip is saved and printed (or deliberately not) — drop raw photos if configured.
-if (SessionManager::saveMode() === 'final_only') {
+if ($purge) {
     SessionManager::purgeRaw($sessionId);
 }
 

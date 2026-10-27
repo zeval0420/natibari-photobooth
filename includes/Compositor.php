@@ -27,8 +27,13 @@ class Compositor
      */
     public static function composeStrip(string $sessionId, array $template): string
     {
-        $outW = (int)$template['output']['width'];
-        $outH = (int)$template['output']['height'];
+        // 4K photos are far sharper than the template's nominal output size, so
+        // render at a multiple of it (layout stays config-driven; every
+        // coordinate is just multiplied by $scale).
+        @ini_set('memory_limit', '1024M');
+        $scale = self::outputScale($sessionId, $template);
+        $outW = (int)round($template['output']['width'] * $scale);
+        $outH = (int)round($template['output']['height'] * $scale);
 
         $canvas = imagecreatetruecolor($outW, $outH);
         imagesavealpha($canvas, true);
@@ -49,7 +54,7 @@ class Compositor
             if (!is_file($photoPath)) {
                 continue; // missing photo -> leave the background showing through
             }
-            self::stampPhoto($canvas, $photoPath, $slot);
+            self::stampPhoto($canvas, $photoPath, $slot, $scale);
         }
 
         // Lay the frame (with its transparent cut-out windows) on top.
@@ -58,7 +63,11 @@ class Compositor
             $frame = self::loadAnyImage($framePath);
             if ($frame !== null) {
                 imagealphablending($canvas, true);
-                imagecopy($canvas, $frame, 0, 0, 0, 0, imagesx($frame), imagesy($frame));
+                if (imagesx($frame) === $outW && imagesy($frame) === $outH) {
+                    imagecopy($canvas, $frame, 0, 0, 0, 0, $outW, $outH);
+                } else {
+                    imagecopyresampled($canvas, $frame, 0, 0, 0, 0, $outW, $outH, imagesx($frame), imagesy($frame));
+                }
                 imagedestroy($frame);
             }
         }
@@ -66,22 +75,45 @@ class Compositor
         if (!is_dir(FINAL_PATH)) {
             mkdir(FINAL_PATH, 0775, true);
         }
-        imagepng($canvas, SessionManager::finalFile($sessionId), 6);
+        imagepng($canvas, SessionManager::finalFile($sessionId), 4);
         imagedestroy($canvas);
 
         return SessionManager::finalRel($sessionId);
     }
 
+    /**
+     * How much to enlarge the template's output size: as much as the captured
+     * photos can actually fill (never below 1, capped at MAX_SCALE for file
+     * size). HD photos and 4K photos both land at the cap for typical slots.
+     */
+    private const MAX_SCALE = 3.0;
+
+    private static function outputScale(string $sessionId, array $template): float
+    {
+        $rawDir = SessionManager::rawDir($sessionId);
+        $scale = self::MAX_SCALE;
+        foreach ($template['photos'] as $i => $slot) {
+            $info = @getimagesize($rawDir . '/photo' . ($i + 1) . '.jpg');
+            if ($info === false || (int)$slot['width'] < 1 || (int)$slot['height'] < 1) {
+                continue;
+            }
+            // Resolution available to the slot after the cover-fit crop.
+            $cover = max($slot['width'] / $info[0], $slot['height'] / $info[1]);
+            $scale = min($scale, 1 / $cover);
+        }
+        return max(1.0, round($scale, 2));
+    }
+
     /** Cover-fit crop + optional rotation, then stamp a single photo onto the canvas. */
-    private static function stampPhoto($canvas, string $photoPath, array $slot): void
+    private static function stampPhoto($canvas, string $photoPath, array $slot, float $scale = 1.0): void
     {
         $src = self::loadAnyImage($photoPath);
         if ($src === null) {
             return;
         }
 
-        $boxW = (int)$slot['width'];
-        $boxH = (int)$slot['height'];
+        $boxW = (int)round($slot['width'] * $scale);
+        $boxH = (int)round($slot['height'] * $scale);
         $srcW = imagesx($src);
         $srcH = imagesy($src);
 
@@ -114,8 +146,8 @@ class Compositor
         // Center the (possibly now-larger, post-rotation) image over the
         // original slot position so the rotated photo stays visually
         // anchored to its window.
-        $destX = (int)$slot['x'] - (int)round((imagesx($fitted) - $boxW) / 2);
-        $destY = (int)$slot['y'] - (int)round((imagesy($fitted) - $boxH) / 2);
+        $destX = (int)round($slot['x'] * $scale) - (int)round((imagesx($fitted) - $boxW) / 2);
+        $destY = (int)round($slot['y'] * $scale) - (int)round((imagesy($fitted) - $boxH) / 2);
 
         imagealphablending($canvas, true);
         imagecopy($canvas, $fitted, $destX, $destY, 0, 0, imagesx($fitted), imagesy($fitted));
@@ -195,7 +227,7 @@ class Compositor
             mkdir(FINAL_PATH, 0775, true);
         }
 
-        imagepng($canvas, SessionManager::finalFile($sessionId, 'print'), 6);
+        imagepng($canvas, SessionManager::finalFile($sessionId, 'print'), 4);
         imagedestroy($canvas);
         imagedestroy($src);
         

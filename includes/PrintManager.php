@@ -73,7 +73,8 @@ class PrintManager
 
         $base = ['printer' => $printer, 'copies' => $copies, 'paper_size' => $paper];
         if ($exit === 0) {
-            return ['status' => 'printed'] + $base;
+            $notes = array_values(array_filter($output, fn($l) => strpos($l, 'NOTE:') === 0));
+            return ['status' => 'printed'] + $base + ($notes ? ['note' => implode(' ', $notes)] : []);
         }
         return ['status' => 'failed', 'reason' => trim(implode(' ', $output)) ?: ('Print command exited with code ' . $exit)] + $base;
     }

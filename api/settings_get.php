@@ -13,6 +13,7 @@ admin_require_api();
 
 $settings = Settings::all();
 unset($settings['admin']['passcode_hash']); // never echo the hash back to the browser
+unset($settings['email']['smtp_pass']);       // nor the mail password
 
 json_response([
     'success' => true,

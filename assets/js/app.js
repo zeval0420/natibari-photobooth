@@ -474,7 +474,7 @@ class PhotoboothApp {
     const message =
       printResult.status === 'printed' ? 'Your strip is printing — grab it from the printer!' :
       printResult.status === 'failed' ? 'Your strip has been saved, but printing failed. Please ask the staff.' :
-      printResult.status === 'simulated' ? 'Your strip has been saved. (No printer is set up yet.)' :
+      printResult.status === 'simulated' ? 'Your strip has been saved, but no printer is selected. Please ask the staff.' :
       'Your strip has been saved.';
     $('#done-message').textContent = message;
 

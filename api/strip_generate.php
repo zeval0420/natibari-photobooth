@@ -35,6 +35,16 @@ try {
 
 SessionManager::recordStrip($sessionId, $relativeStripPath);
 
+// Also save the printable version now (e.g. two strips side by side), so it is
+// kept on disk even if the guest never prints or the printer fails.
+try {
+    $meta = SessionManager::getMetadata($sessionId);
+    $meta['strip_print'] = Compositor::printableFor($sessionId, $meta);
+    SessionManager::saveMetadata($sessionId, $meta);
+} catch (Throwable $e) {
+    error_log('Could not save printable strip: ' . $e->getMessage());
+}
+
 json_response([
     'success' => true,
     'strip_url' => $relativeStripPath . '?t=' . time(),

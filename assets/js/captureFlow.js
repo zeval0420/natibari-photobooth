@@ -37,6 +37,11 @@ export class CaptureFlow {
     this.frameImgEl.src = template.frame_url;
     this.frameImgEl.style.aspectRatio = `${template.output.width} / ${template.output.height}`;
     this.clearSlotPhotos();
+    this.fitVideoToSlot(0);
+    if (!this._resizeBound) {
+      this._resizeBound = true;
+      window.addEventListener('resize', () => this.fitVideoToSlot(this._fitSlotIndex || 0));
+    }
   }
 
   /** Compute where the template's frame image actually renders inside the preview panel (object-fit:contain math). */
@@ -74,6 +79,34 @@ export class CaptureFlow {
     this.highlightEl.style.opacity = '1';
   }
 
+  /**
+   * Show the live feed cropped to the slot's aspect ratio (centred in the
+   * stage) so the preview matches exactly what captureFrame() will save —
+   * e.g. a near-square window shows a near-square feed, not a 16:9 one.
+   */
+  fitVideoToSlot(index) {
+    const slot = this.template?.photos[index];
+    const video = this.camera.video;
+    const stage = this.stageEl;
+    if (!slot || !stage) return;
+    this._fitSlotIndex = index;
+    const sw = stage.clientWidth;
+    const sh = stage.clientHeight;
+    if (!sw || !sh) return;
+    const aspect = slot.width / slot.height;
+    let w = sw;
+    let h = w / aspect;
+    if (h > sh) { h = sh; w = h * aspect; }
+    Object.assign(video.style, {
+      inset: 'auto',
+      left: `${(sw - w) / 2}px`,
+      top: `${(sh - h) / 2}px`,
+      width: `${w}px`,
+      height: `${h}px`,
+      objectFit: 'cover',
+    });
+  }
+
   hideHighlight() {
     this.highlightEl.style.opacity = '0';
   }
@@ -108,6 +141,7 @@ export class CaptureFlow {
   /** Run the countdown, flash, shutter, capture, and upload for ONE slot (1-based index). */
   async captureOne(sessionId, slotNumber, countdownSeconds, onProgress = () => {}) {
     this.highlightSlot(slotNumber - 1);
+    this.fitVideoToSlot(slotNumber - 1);
     await this.countdown.run(countdownSeconds, (n) => onProgress({ phase: 'countdown', n }));
 
     // Flash + shutter sound fire together at the instant of capture.
@@ -122,7 +156,7 @@ export class CaptureFlow {
     }
 
     const slot = this.template.photos[slotNumber - 1];
-    const dataUrl = this.camera.captureFrame(this.jpegQuality || 0.92, slot.width / slot.height);
+    const dataUrl = this.camera.captureFrame(this.jpegQuality || 0.95, slot.width / slot.height);
     onProgress({ phase: 'captured', n: slotNumber });
 
     await SessionClient.savePhoto(sessionId, slotNumber, dataUrl);

@@ -31,23 +31,35 @@ export class CameraController {
     const did = opts.deviceId || this.deviceId;
     const toConstraint = (v, fallback) =>
       v == null ? { ideal: fallback } : typeof v === 'number' ? { ideal: v } : v;
-    const buildConstraints = (deviceId) => ({
+    // Ask for 4K; the browser picks the best mode the camera really offers.
+    // `min` keeps it at HD or better, and the last attempt drops it so a
+    // sub-HD camera still works.
+    const buildConstraints = (deviceId, requireHd) => ({
       audio: false,
       video: {
-        width: toConstraint(opts.width, 1920),
-        height: toConstraint(opts.height, 1080),
+        width: { ...toConstraint(opts.width, 3840), ...(requireHd ? { min: 1280 } : {}) },
+        height: { ...toConstraint(opts.height, 2160), ...(requireHd ? { min: 720 } : {}) },
         aspectRatio: opts.aspectRatio ?? { ideal: 16 / 9 },
         facingMode: deviceId ? undefined : 'user',
         deviceId: deviceId ? { exact: deviceId } : undefined,
       },
     });
-    try {
-      this.stream = await navigator.mediaDevices.getUserMedia(buildConstraints(did));
-    } catch (_) {
-      if (!did) throw _;
-      this.deviceId = null;
-      this.stream = await navigator.mediaDevices.getUserMedia(buildConstraints(null));
+    const attempts = did
+      ? [[did, true], [did, false], [null, true], [null, false]]
+      : [[null, true], [null, false]];
+    let lastErr;
+    for (const [deviceId, requireHd] of attempts) {
+      try {
+        this.stream = await navigator.mediaDevices.getUserMedia(buildConstraints(deviceId, requireHd));
+        if (did && !deviceId) this.deviceId = null;
+        lastErr = null;
+        break;
+      } catch (e) {
+        lastErr = e;
+        if (e?.name === 'NotAllowedError' || e?.name === 'SecurityError') break;
+      }
     }
+    if (lastErr) throw lastErr;
     this.video.srcObject = this.stream;
     await this.video.play();
     await this._waitForFrame();
@@ -56,9 +68,7 @@ export class CameraController {
 
   async switchDevice(deviceId) {
     this.deviceId = deviceId;
-    const w = this.video.videoWidth || 1280;
-    const h = this.video.videoHeight || 720;
-    return this.start({ deviceId, width: w, height: h });
+    return this.start({ deviceId });
   }
 
   stop() {
@@ -90,7 +100,7 @@ export class CameraController {
    * If the preview is mirrored on screen, the capture is mirrored too
    * so the saved photo matches exactly what the user saw of themselves.
    */
-  captureFrame(quality = 0.92, targetAspect = null) {
+  captureFrame(quality = 0.95, targetAspect = null) {
     const video = this.video;
     const vw = video.videoWidth;
     const vh = video.videoHeight;
@@ -112,6 +122,7 @@ export class CameraController {
     this.captureCanvas.width = w;
     this.captureCanvas.height = h;
     const ctx = this.captureCanvas.getContext('2d');
+    ctx.imageSmoothingQuality = 'high';
 
     if (this.isMirrored) {
       ctx.translate(w, 0);

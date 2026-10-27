@@ -22,7 +22,7 @@ json_response([
         'dark_mode' => Settings::get('ui.dark_mode', 'auto'),
         'idle_return_seconds' => (int)Settings::get('ui.idle_return_seconds', 20),
         'default_template' => Settings::get('templates.default_template', null),
-        'jpeg_quality' => max(0.1, min(1, (int)Settings::get('storage.jpeg_quality', 92) / 100)),
+        'jpeg_quality' => max(0.1, min(1, (int)Settings::get('storage.jpeg_quality', 95) / 100)),
         'sharing_enabled' => ImageHost::enabled(),
         'auto_print' => (bool)Settings::get('printing.auto_print', false) && PrintManager::isConfigured(),
     ],

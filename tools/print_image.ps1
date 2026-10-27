@@ -45,6 +45,12 @@ try {
     # Landscape sheet when the image is wider than tall (e.g. two strips side by side).
     $landscape = $img.Width -gt $img.Height
 
+    # The image is fitted to the requested paper. When the printer's driver offers
+    # that size we use it and fill the whole sheet. Some drivers (e.g. the Epson
+    # ESC/P-R V4 class driver) do not list 5R / 5x7 and silently fall back to
+    # Letter, so in that case we print at the true requested size, centred on the
+    # closest larger sheet the driver does offer.
+    $fitW = 0; $fitH = 0   # 0 = fill the whole page
     $dim = $sizes[$Paper]
     if ($dim) {
         $w = $dim[0]; $h = $dim[1]
@@ -52,7 +58,23 @@ try {
         foreach ($ps in $doc.PrinterSettings.PaperSizes) {
             if ([Math]::Abs($ps.Width - $w) -le 8 -and [Math]::Abs($ps.Height - $h) -le 8) { $match = $ps; break }
         }
-        if (-not $match) { $match = New-Object System.Drawing.Printing.PaperSize($Paper, $w, $h) }
+        if (-not $match) {
+            $best = $null; $largest = $null
+            foreach ($ps in $doc.PrinterSettings.PaperSizes) {
+                $area = $ps.Width * $ps.Height
+                if (-not $largest -or $area -gt ($largest.Width * $largest.Height)) { $largest = $ps }
+                if ($ps.Width -ge ($w - 8) -and $ps.Height -ge ($h - 8)) {
+                    if (-not $best -or $area -lt ($best.Width * $best.Height)) { $best = $ps }
+                }
+            }
+            $match = if ($best) { $best } else { $largest }
+            if ($match) {
+                $fitW = $w; $fitH = $h
+                Write-Output "NOTE: '$Paper' is not offered by this printer's driver; printing at true $Paper size centred on $($match.PaperName)."
+            } else {
+                $match = New-Object System.Drawing.Printing.PaperSize($Paper, $w, $h)
+            }
+        }
         $doc.DefaultPageSettings.PaperSize = $match
     }
     $doc.DefaultPageSettings.Landscape = $landscape
@@ -68,6 +90,12 @@ try {
         $m = $marginMm / 25.4 * 100
         $boxW = $page.Width - 2 * $m
         $boxH = $page.Height - 2 * $m
+        if ($fitW -gt 0) {
+            $rw = $fitW; $rh = $fitH
+            if ($landscape) { $rw = $fitH; $rh = $fitW }
+            $boxW = [Math]::Min($boxW, $rw - 2 * $m)
+            $boxH = [Math]::Min($boxH, $rh - 2 * $m)
+        }
         $ratio = [Math]::Min($boxW / $img.Width, $boxH / $img.Height) * $scale
         $dw = $img.Width * $ratio
         $dh = $img.Height * $ratio
